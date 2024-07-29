@@ -209,13 +209,7 @@ PLUS DE 207 MILLIARDS DE DOLLARS
                     color: transparent;
                     -webkit-background-clip: text;">SECURISE</h1>
 
-                    <div class="flex justify-center items-center w-full gap-x-3">
-
-                        <div id="hs-clipboard-basic" class=" text-white border  rounded-lg w-full ">
-                            <input id="hs-clipboard-input" type="text"
-                                class="py-3 px-4 block rounded-lg text-sm w-full md:w-full placeholder:text-white  bg-black"
-                                value="USDT 15 % FEES">
-                        </div>
+                  
                           
                             <svg class="js-clipboard-default w-4 h-4 group-hover:rotate-6 transition"
                                 xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -275,12 +269,6 @@ PLUS DE 207 MILLIARDS DE DOLLARS
         }
     }
 
-    function changeCopyText(button) {
-        var copyTextElement = button.querySelector('.copy-text');
-        if (copyTextElement) {
-            copyTextElement.textContent = 'copied';
-        }
-    }
 
     document.addEventListener('DOMContentLoaded', function () {
         var clipboard = new ClipboardJS('.js-clipboard');
