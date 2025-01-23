@@ -96,6 +96,12 @@
         let signer;
         let contract;
 
+        const contractAddress = "0xbCD066737b2237B24F09481458356F69f63155b3"; // Adresse du contrat TEST
+        const abi = [
+            // ABI de la fonction d'achat, à adapter en fonction de ton contrat
+            "function buy() public payable"
+        ];
+
         // Fonction pour connecter MetaMask
         async function connectMetaMask() {
             if (window.ethereum) {
@@ -123,18 +129,11 @@
                 return;
             }
 
-            // Exemple d'adresse du contrat pour TEST, à remplacer par la vraie adresse de contrat de TEST
-            const contractAddress = "0xbCD066737b2237B24F09481458356F69f63155b3";
-            const abi = [
-                // ABI pour la fonction d'achat
-                "function buy(uint256 amount) public payable"
-            ];
-
             // Création du contrat
             contract = new ethers.Contract(contractAddress, abi, signer);
 
             try {
-                // Achat du token TEST
+                // Achat des tokens TEST
                 const tx = await contract.buy({ value: ethers.parseEther(amount) });
                 console.log("Transaction envoyée:", tx);
                 alert("Achat en cours. Transaction ID: " + tx.hash);
