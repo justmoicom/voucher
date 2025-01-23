@@ -72,10 +72,10 @@
         <section id="buy-test" class="buy-section">
             <div class="container">
                 <h2>Acheter TEST</h2>
-                <p>Achetez TEST facilement et en toute sécurité.  Connectez votre portefeuille MetaMask et suivez les instructions.</p>
+                <p>Achetez TEST facilement et en toute sécurité. Connectez votre portefeuille MetaMask et suivez les instructions.</p>
 
                 <div class="buy-form">
-                    <label for="amount">Montant en ETH</label>
+                    <label for="amount">Montant en BNB</label>
                     <input type="number" id="amount" placeholder="Entrez le montant">
                     <button class="button secondary" id="buy-button">Acheter</button>
                 </div>
@@ -96,17 +96,25 @@
         let signer;
         let contract;
 
-        const contractAddress = "0xbCD066737b2237B24F09481458356F69f63155b3"; // Adresse du contrat TEST
+        const contractAddress = "0xbCD066737b2237B24F09481458356F69f63155b3"; // Adresse du contrat TEST sur le testnet BSC
         const abi = [
             // ABI de la fonction d'achat, à adapter en fonction de ton contrat
             "function buy() public payable"
         ];
 
-        // Fonction pour connecter MetaMask
+        // Fonction pour vérifier et connecter MetaMask au Testnet BSC
         async function connectMetaMask() {
             if (window.ethereum) {
                 provider = new ethers.BrowserProvider(window.ethereum);
                 try {
+                    // Vérifier si le bon réseau (Binance Smart Chain Testnet) est sélectionné
+                    const network = await provider.getNetwork();
+                    if (network.chainId !== 97) {
+                        // Si ce n'est pas le bon réseau, demander de changer
+                        alert("Veuillez vous connecter au testnet Binance Smart Chain !");
+                        await switchToBSCTestnet();
+                    }
+
                     // Demande de connexion à MetaMask
                     await provider.send("eth_requestAccounts", []);
                     signer = provider.getSigner();
@@ -118,6 +126,28 @@
                 }
             } else {
                 alert("MetaMask n'est pas installé. Veuillez l'installer pour continuer.");
+            }
+        }
+
+        // Fonction pour changer de réseau vers le testnet BSC
+        async function switchToBSCTestnet() {
+            try {
+                await window.ethereum.request({
+                    method: 'wallet_addEthereumChain',
+                    params: [{
+                        chainId: '0x61', // Testnet BSC Chain ID en hexadécimal
+                        chainName: 'Binance Smart Chain Testnet',
+                        rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545/'],
+                        nativeCurrency: {
+                            name: 'Binance Coin',
+                            symbol: 'BNB',
+                            decimals: 18
+                        },
+                        blockExplorerUrls: ['https://testnet.bscscan.com']
+                    }]
+                });
+            } catch (error) {
+                console.error("Erreur lors du changement de réseau:", error);
             }
         }
 
