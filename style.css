@@ -1,4 +1,4 @@
-/* Reset CSS (pour normaliser l'apparence sur différents navigateurs) */
+/* Reset CSS (pour normaliser l'apparence sur diffÃ©rents navigateurs) */
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
@@ -7,7 +7,7 @@
 
 body {
     font-family: 'Roboto', sans-serif;
-    background-color: #1e272e; /* Bleu foncé (Kraken like) */
+    background-color: #1e272e; /* Bleu foncÃ© (Kraken like) */
     color: #fff; /* Texte blanc */
     line-height: 1.6;
 }
@@ -20,11 +20,11 @@ body {
 
 /* Header */
 header {
-    background-color: #2d3436; /* Légèrement plus clair que le body */
+    background-color: #2d3436; /* LÃ©gÃ¨rement plus clair que le body */
     padding: 1em 0;
-    position: sticky; /* Fixe en haut de l'écran */
+    position: sticky; /* Fixe en haut de l'Ã©cran */
     top: 0;
-    z-index: 100; /* Assure qu'il est au-dessus des autres éléments */
+    z-index: 100; /* Assure qu'il est au-dessus des autres Ã©lÃ©ments */
 }
 
 header .container {
@@ -64,7 +64,7 @@ nav a:hover {
 }
 
 .metamask-connect button {
-    background-color: #636e72; /* Gris bleuté */
+    background-color: #636e72; /* Gris bleutÃ© */
     color: #fff;
     border: none;
     padding: 0.75em 1.5em;
@@ -79,7 +79,7 @@ nav a:hover {
 
 /* Hero Section */
 .hero {
-    background: linear-gradient(to right, #2d3436, #1e272e); /* Dégradé de couleurs */
+    background: linear-gradient(to right, #2d3436, #1e272e); /* DÃ©gradÃ© de couleurs */
     padding: 5em 0;
 }
 
