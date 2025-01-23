@@ -4,10 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Achetez TEST - La Crypto du Futur</title>
-    <link rel="stylesheet" href="style.css"> <!-- Lien vers votre fichier CSS -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
 </head>
 <body>
@@ -33,42 +30,6 @@
     </header>
 
     <main>
-        <section class="hero">
-            <div class="container">
-                <div class="hero-content">
-                    <h1>Investissez dans le Futur avec TEST</h1>
-                    <p>TEST est la cryptomonnaie innovante qui révolutionne [votre domaine d'application]. Rejoignez la communauté et profitez d'avantages exclusifs.</p>
-                    <a href="#buy-test" class="button primary">Acheter TEST</a>
-                </div>
-                <div class="hero-image">
-                    <img src="images/crypto-futuristic.jpg" alt="Illustration Futuriste de TEST" width="500">
-                </div>
-            </div>
-        </section>
-
-        <section class="features">
-            <div class="container">
-                <h2>Pourquoi choisir TEST ?</h2>
-                <div class="feature-grid">
-                    <div class="feature-item">
-                        <img src="images/feature1.png" alt="Avantage 1" width="80">
-                        <h3>Sécurité Maximale</h3>
-                        <p>Notre infrastructure est conçue avec les normes de sécurité les plus élevées pour protéger vos investissements.</p>
-                    </div>
-                    <div class="feature-item">
-                        <img src="images/feature2.png" alt="Avantage 2" width="80">
-                        <h3>Transactions Rapides</h3>
-                        <p>Profitez de transactions instantanées et de frais réduits grâce à notre technologie de pointe.</p>
-                    </div>
-                    <div class="feature-item">
-                        <img src="images/feature3.png" alt="Avantage 3" width="80">
-                        <h3>Communauté Engagée</h3>
-                        <p>Rejoignez une communauté active et bénéficiez d'un support constant de notre équipe et des autres utilisateurs.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <section id="buy-test" class="buy-section">
             <div class="container">
                 <h2>Acheter TEST</h2>
@@ -76,7 +37,7 @@
 
                 <div class="buy-form">
                     <label for="amount">Montant en BNB</label>
-                    <input type="number" id="amount" placeholder="Entrez le montant">
+                    <input type="number" id="amount" placeholder="Entrez le montant" step="0.01" min="0">
                     <button class="button secondary" id="buy-button">Acheter</button>
                 </div>
                 <p class="disclaimer">Avertissement: L'investissement dans les cryptomonnaies comporte des risques. Veuillez investir de manière responsable.</p>
@@ -98,38 +59,34 @@
 
         const contractAddress = "0xbCD066737b2237B24F09481458356F69f63155b3"; // Adresse du contrat TEST sur le testnet BSC
         const abi = [
-            // ABI de la fonction d'achat, à adapter en fonction de ton contrat
-            "function buy() public payable"
+            "function buy() public payable" // ABI simplifié de la fonction d'achat
         ];
 
-        // Fonction pour vérifier et connecter MetaMask au Testnet BSC
+        // Vérifier si MetaMask est installé
         async function connectMetaMask() {
             if (window.ethereum) {
                 provider = new ethers.BrowserProvider(window.ethereum);
                 try {
-                    // Vérifier si le bon réseau (Binance Smart Chain Testnet) est sélectionné
+                    await provider.send("eth_requestAccounts", []); // Demander la connexion
+                    signer = provider.getSigner();
+
+                    // Vérifier le réseau
                     const network = await provider.getNetwork();
                     if (network.chainId !== 97) {
-                        // Si ce n'est pas le bon réseau, demander de changer
-                        alert("Veuillez vous connecter au testnet Binance Smart Chain !");
                         await switchToBSCTestnet();
                     }
 
-                    // Demande de connexion à MetaMask
-                    await provider.send("eth_requestAccounts", []);
-                    signer = provider.getSigner();
-                    console.log("Compte connecté:", await signer.getAddress());
-                    alert("MetaMask connecté !");
+                    alert("MetaMask connecté : " + (await signer.getAddress()));
                 } catch (err) {
-                    console.error("Erreur de connexion:", err);
-                    alert("Erreur de connexion à MetaMask. Assurez-vous que MetaMask est installé.");
+                    console.error("Erreur de connexion à MetaMask :", err);
+                    alert("Connexion échouée. Veuillez vérifier MetaMask.");
                 }
             } else {
                 alert("MetaMask n'est pas installé. Veuillez l'installer pour continuer.");
             }
         }
 
-        // Fonction pour changer de réseau vers le testnet BSC
+        // Ajouter ou basculer vers le réseau Binance Smart Chain Testnet
         async function switchToBSCTestnet() {
             try {
                 await window.ethereum.request({
@@ -146,36 +103,43 @@
                         blockExplorerUrls: ['https://testnet.bscscan.com']
                     }]
                 });
+                alert("Réseau BSC Testnet ajouté.");
             } catch (error) {
-                console.error("Erreur lors du changement de réseau:", error);
+                console.error("Erreur lors du changement de réseau :", error);
             }
         }
 
-        // Fonction pour acheter des tokens TEST
+        // Acheter des tokens TEST
         async function acheterTEST() {
+            if (!signer) {
+                alert("Veuillez connecter MetaMask d'abord !");
+                return;
+            }
+
             const amount = document.getElementById('amount').value;
             if (!amount || parseFloat(amount) <= 0) {
                 alert("Veuillez entrer un montant valide.");
                 return;
             }
 
-            // Création du contrat
-            contract = new ethers.Contract(contractAddress, abi, signer);
-
+            // Connecter au contrat
             try {
-                // Achat des tokens TEST
+                contract = new ethers.Contract(contractAddress, abi, signer);
+
+                // Envoyer la transaction pour acheter
                 const tx = await contract.buy({ value: ethers.parseEther(amount) });
-                console.log("Transaction envoyée:", tx);
-                alert("Achat en cours. Transaction ID: " + tx.hash);
+                alert("Achat en cours. Transaction ID : " + tx.hash);
+
+                // Attendre la confirmation
                 await tx.wait();
                 alert("Achat réussi !");
             } catch (err) {
-                console.error("Erreur lors de l'achat:", err);
-                alert("Erreur lors de l'achat.");
+                console.error("Erreur lors de l'achat :", err);
+                alert("Erreur lors de l'achat. Veuillez vérifier votre solde ou vos paramètres.");
             }
         }
 
-        // Event listeners
+        // Ajouter des événements aux boutons
         document.getElementById('connect-metamask').addEventListener('click', connectMetaMask);
         document.getElementById('buy-button').addEventListener('click', acheterTEST);
     </script>
