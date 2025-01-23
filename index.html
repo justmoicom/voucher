@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Achetez TEST - La Crypto du Futur</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.11/web3.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tronweb3/tronweb@4.0.0/dist/TronWeb.min.js"></script>
 </head>
 <body>
@@ -55,7 +55,7 @@
     </footer>
 
     <script>
-        let provider, signer, contract;
+        let web3, contract;
         let tronWeb;
         let activeWallet = null; // Pour suivre quel portefeuille est utilisé
 
@@ -64,52 +64,54 @@
             "function buy() public payable" // ABI simplifié de la fonction d'achat
         ];
 
-        // MetaMask : Connexion
+        // Fonction pour connecter MetaMask
         async function connectMetaMask() {
             if (window.ethereum) {
-                provider = new ethers.BrowserProvider(window.ethereum);
-                try {
-                    await provider.send("eth_requestAccounts", []);
-                    signer = provider.getSigner();
-                    activeWallet = 'MetaMask';
+                // Vérifier si MetaMask est installé
+                if (window.ethereum.isMetaMask) {
+                    try {
+                        // Demander à MetaMask de nous connecter
+                        await window.ethereum.request({ method: 'eth_requestAccounts' });
+                        web3 = new Web3(window.ethereum);
+                        activeWallet = 'MetaMask';
 
-                    const network = await provider.getNetwork();
-                    if (network.chainId !== 97) {
-                        await switchToBSCTestnet();
+                        // Vérifier le réseau
+                        const network = await web3.eth.net.getId();
+                        if (network !== 97) { // Testnet BSC
+                            await switchToBSCTestnet();
+                        }
+
+                        alert("MetaMask connecté !");
+                    } catch (err) {
+                        console.error("Erreur de connexion à MetaMask :", err);
+                        alert("Erreur de connexion. Assurez-vous que MetaMask est bien installé.");
                     }
-
-                    alert("MetaMask connecté : " + (await signer.getAddress()));
-                } catch (err) {
-                    console.error("Erreur de connexion MetaMask :", err);
+                } else {
+                    alert("MetaMask n'est pas installé.");
                 }
             } else {
-                alert("MetaMask n'est pas installé.");
+                alert("Extension MetaMask non détectée.");
             }
         }
 
-        // TronLink : Connexion
+        // Fonction pour connecter TronLink
         async function connectTronLink() {
             if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
                 tronWeb = window.tronWeb;
-                try {
-                    const address = tronWeb.defaultAddress.base58;
-                    activeWallet = 'TronLink';
-                    alert("TronLink connecté : " + address);
-                } catch (err) {
-                    console.error("Erreur de connexion TronLink :", err);
-                }
+                activeWallet = 'TronLink';
+                alert("TronLink connecté : " + tronWeb.defaultAddress.base58);
             } else {
                 alert("TronLink n'est pas installé ou non connecté.");
             }
         }
 
-        // Switcher au testnet Binance Smart Chain
+        // Ajouter ou basculer vers le testnet Binance Smart Chain
         async function switchToBSCTestnet() {
             try {
                 await window.ethereum.request({
                     method: 'wallet_addEthereumChain',
                     params: [{
-                        chainId: '0x61',
+                        chainId: '0x61', // Testnet BSC Chain ID en hexadécimal
                         chainName: 'Binance Smart Chain Testnet',
                         rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545/'],
                         nativeCurrency: {
@@ -120,6 +122,7 @@
                         blockExplorerUrls: ['https://testnet.bscscan.com']
                     }]
                 });
+                alert("Réseau Binance Smart Chain Testnet ajouté.");
             } catch (err) {
                 console.error("Erreur lors du changement de réseau :", err);
             }
@@ -135,13 +138,13 @@
 
             if (activeWallet === 'MetaMask') {
                 try {
-                    contract = new ethers.Contract(contractAddress, abi, signer);
-                    const tx = await contract.buy({ value: ethers.parseEther(amount) });
-                    alert("Achat en cours via MetaMask. Transaction ID : " + tx.hash);
-                    await tx.wait();
-                    alert("Achat réussi !");
+                    contract = new web3.eth.Contract(abi, contractAddress);
+                    const accounts = await web3.eth.getAccounts();
+                    const tx = await contract.methods.buy().send({ from: accounts[0], value: web3.utils.toWei(amount, 'ether') });
+                    alert("Achat en cours via MetaMask. Transaction ID : " + tx.transactionHash);
                 } catch (err) {
                     console.error("Erreur lors de l'achat avec MetaMask :", err);
+                    alert("Erreur lors de l'achat avec MetaMask.");
                 }
             } else if (activeWallet === 'TronLink') {
                 try {
@@ -149,9 +152,10 @@
                     alert("Achat en cours via TronLink. Transaction ID : " + tx.txid);
                 } catch (err) {
                     console.error("Erreur lors de l'achat avec TronLink :", err);
+                    alert("Erreur lors de l'achat avec TronLink.");
                 }
             } else {
-                alert("Veuillez connecter un portefeuille d'abord.");
+                alert("Veuillez connecter un portefeuille.");
             }
         }
 
