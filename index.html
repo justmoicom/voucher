@@ -3,49 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Site Web</title>
-    <link rel="stylesheet" href="style.css"> <!-- Lien vers un fichier CSS externe (optionnel) -->
+    <title>Achetez TEST - La Crypto du Futur</title>
+    <link rel="stylesheet" href="style.css"> <!-- Lien vers votre fichier CSS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
     <header>
-        <h1>Bienvenue sur Mon Site Web</h1>
-        <nav>
-            <ul>
-                <li><a href="#">Accueil</a></li>
-                <li><a href="#">À Propos</a></li>
-                <li><a href="#">Services</a></li>
-                <li><a href="#">Contact</a></li>
-            </ul>
-        </nav>
+        <div class="container">
+            <div class="logo">
+                <img src="images/test-logo.png" alt="Logo TEST" width="50"> <!-- Remplacez par le chemin de votre logo -->
+                <span>TEST</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#">À Propos</a></li>
+                    <li><a href="#">Fonctionnalités</a></li>
+                    <li><a href="#">Roadmap</a></li>
+                    <li><a href="#">FAQ</a></li>
+                </ul>
+            </nav>
+            <div class="metamask-connect">
+                <button id="connect-metamask">Connecter MetaMask</button>
+            </div>
+        </div>
     </header>
 
     <main>
-        <section id="accueil">
-            <h2>Section d'Accueil</h2>
-            <p>Ceci est un paragraphe d'exemple. Vous pouvez le modifier avec votre propre contenu.</p>
-            <img src="image.jpg" alt="Description de l'image">
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>Investissez dans le Futur avec TEST</h1>
+                    <p>TEST est la cryptomonnaie innovante qui révolutionne [votre domaine d'application]. Rejoignez la communauté et profitez d'avantages exclusifs.</p>
+                    <a href="#buy-test" class="button primary">Acheter TEST</a>
+                </div>
+                <div class="hero-image">
+                    <img src="images/crypto-futuristic.jpg" alt="Illustration Futuriste de TEST" width="500"> <!-- Remplacez par une image futuriste -->
+                </div>
+            </div>
         </section>
 
-        <section id="a-propos">
-            <h2>À Propos de Nous</h2>
-            <p>Plus d'informations sur nous ici.</p>
+        <section class="features">
+            <div class="container">
+                <h2>Pourquoi choisir TEST ?</h2>
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <img src="images/feature1.png" alt="Avantage 1" width="80"> <!-- Remplacez par une icône -->
+                        <h3>Sécurité Maximale</h3>
+                        <p>Notre infrastructure est conçue avec les normes de sécurité les plus élevées pour protéger vos investissements.</p>
+                    </div>
+                    <div class="feature-item">
+                        <img src="images/feature2.png" alt="Avantage 2" width="80"> <!-- Remplacez par une icône -->
+                        <h3>Transactions Rapides</h3>
+                        <p>Profitez de transactions instantanées et de frais réduits grâce à notre technologie de pointe.</p>
+                    </div>
+                    <div class="feature-item">
+                        <img src="images/feature3.png" alt="Avantage 3" width="80"> <!-- Remplacez par une icône -->
+                        <h3>Communauté Engagée</h3>
+                        <p>Rejoignez une communauté active et bénéficiez d'un support constant de notre équipe et des autres utilisateurs.</p>
+                    </div>
+                </div>
+            </div>
         </section>
 
-        <section id="services">
-            <h2>Nos Services</h2>
-            <ul>
-                <li>Service 1</li>
-                <li>Service 2</li>
-                <li>Service 3</li>
-            </ul>
+        <section id="buy-test" class="buy-section">
+            <div class="container">
+                <h2>Acheter TEST</h2>
+                <p>Achetez TEST facilement et en toute sécurité.  Connectez votre portefeuille MetaMask et suivez les instructions.</p>
+
+                <div class="buy-form">
+                    <label for="amount">Montant en [devise]</label>
+                    <input type="number" id="amount" placeholder="Entrez le montant">
+                    <button class="button secondary">Acheter</button>
+                </div>
+                 <p class="disclaimer">Avertissement: L'investissement dans les cryptomonnaies comporte des risques. Veuillez investir de manière responsable.</p>
+            </div>
         </section>
     </main>
 
     <footer>
-        <p>© 2023 Mon Site Web</p>
+        <div class="container">
+            <p>© 2024 TEST. Tous droits réservés.</p>
+            <p><a href="#">Mentions Légales</a> | <a href="#">Conditions d'Utilisation</a></p>
+        </div>
     </footer>
 
-    <script src="script.js"></script> <!-- Lien vers un fichier JavaScript externe (optionnel) -->
+    <script>
+        // Placeholder pour le code JavaScript de connexion à MetaMask
+        document.getElementById('connect-metamask').addEventListener('click', function() {
+            alert('Fonctionnalité MetaMask à implémenter.'); // Remplacez par le code réel
+        });
+
+        //Placeholder pour la logique d'achat
+
+    </script>
 </body>
 </html>
