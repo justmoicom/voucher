@@ -1,0 +1,256 @@
+/* Reset CSS (pour normaliser l'apparence sur différents navigateurs) */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #1e272e; /* Bleu foncé (Kraken like) */
+    color: #fff; /* Texte blanc */
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header */
+header {
+    background-color: #2d3436; /* Légèrement plus clair que le body */
+    padding: 1em 0;
+    position: sticky; /* Fixe en haut de l'écran */
+    top: 0;
+    z-index: 100; /* Assure qu'il est au-dessus des autres éléments */
+}
+
+header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.logo img {
+    margin-right: 10px;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+}
+
+nav li {
+    margin-left: 20px;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s ease; /* Effet de transition au survol */
+}
+
+nav a:hover {
+    color: #a4b0be; /* Couleur plus claire au survol */
+}
+
+.metamask-connect button {
+    background-color: #636e72; /* Gris bleuté */
+    color: #fff;
+    border: none;
+    padding: 0.75em 1.5em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.metamask-connect button:hover {
+    background-color: #747d8c;
+}
+
+/* Hero Section */
+.hero {
+    background: linear-gradient(to right, #2d3436, #1e272e); /* Dégradé de couleurs */
+    padding: 5em 0;
+}
+
+.hero .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.hero-content {
+    max-width: 50%;
+}
+
+.hero h1 {
+    font-size: 3em;
+    margin-bottom: 0.5em;
+}
+
+.hero p {
+    font-size: 1.2em;
+    margin-bottom: 1.5em;
+    color: #a4b0be;
+}
+
+.button {
+    display: inline-block;
+    padding: 1em 2em;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.button.primary {
+    background-color: #00a8ff; /* Bleu vif */
+    color: #fff;
+}
+
+.button.primary:hover {
+    background-color: #0097e6;
+}
+
+.button.secondary {
+    background-color: #636e72;
+    color: #fff;
+}
+
+.button.secondary:hover {
+    background-color: #747d8c;
+}
+
+/* Features Section */
+.features {
+    padding: 4em 0;
+}
+
+.features h2 {
+    font-size: 2.5em;
+    text-align: center;
+    margin-bottom: 1.5em;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2em;
+}
+
+.feature-item {
+    background-color: #2d3436;
+    padding: 2em;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.feature-item img {
+    margin-bottom: 1em;
+}
+
+.feature-item h3 {
+    margin-bottom: 0.5em;
+}
+
+.feature-item p {
+    color: #a4b0be;
+}
+
+/* Buy Section */
+.buy-section {
+    background-color: #2d3436;
+    padding: 4em 0;
+}
+
+.buy-section h2 {
+    font-size: 2.5em;
+    text-align: center;
+    margin-bottom: 1.5em;
+}
+
+.buy-section p {
+    text-align: center;
+    margin-bottom: 2em;
+    color: #a4b0be;
+}
+
+.buy-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.buy-form label {
+    margin-bottom: 0.5em;
+    font-size: 1.2em;
+}
+
+.buy-form input {
+    padding: 0.75em;
+    border: none;
+    border-radius: 5px;
+    margin-bottom: 1em;
+    width: 300px;
+    background-color: #3d4548;
+    color: #fff;
+}
+
+.buy-form input::placeholder {
+    color: #a4b0be;
+}
+
+.disclaimer {
+  font-size:0.8em;
+  text-align:center;
+  color:#a4b0be;
+}
+
+/* Footer */
+footer {
+    background-color: #2d3436;
+    padding: 2em 0;
+    text-align: center;
+    color: #a4b0be;
+}
+
+footer a {
+    color: #a4b0be;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+/* Media Queries (pour le responsive design) */
+@media (max-width: 768px) {
+    .hero .container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .hero-content {
+        max-width: 100%;
+        margin-bottom: 2em;
+    }
+
+    .hero-image img {
+        max-width: 100%;
+    }
+
+    nav ul {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    nav li {
+        margin: 0.5em 0;
+    }
+}
