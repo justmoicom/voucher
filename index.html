@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Achetez TEST - La Crypto du Futur</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.11/web3.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -23,24 +25,33 @@
                     <li><a href="#">FAQ</a></li>
                 </ul>
             </nav>
-            <div class="wallet-connect">
+            <div class="metamask-connect">
                 <button id="connect-metamask">Connecter MetaMask</button>
             </div>
         </div>
     </header>
 
     <main>
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>Investissez dans le Futur avec TEST</h1>
+                    <p>TEST est la cryptomonnaie innovante qui révolutionne [votre domaine d'application]. Rejoignez la communauté et profitez d'avantages exclusifs.</p>
+                    <a href="#buy-test" class="button primary">Acheter TEST</a>
+                </div>
+            </div>
+        </section>
+
         <section id="buy-test" class="buy-section">
             <div class="container">
                 <h2>Acheter TEST</h2>
-                <p>Achetez TEST facilement et en toute sécurité. Connectez votre portefeuille et suivez les instructions.</p>
-
+                <p>Achetez TEST facilement et en toute sécurité. Connectez votre portefeuille MetaMask et suivez les instructions.</p>
                 <div class="buy-form">
                     <label for="amount">Montant en BNB</label>
-                    <input type="number" id="amount" placeholder="Entrez le montant" step="0.01" min="0">
-                    <button class="button secondary" id="buy-button">Acheter</button>
+                    <input type="number" id="amount" placeholder="Entrez le montant">
+                    <button id="buy-button" class="button secondary">Acheter</button>
                 </div>
-                <p class="disclaimer">Avertissement: L'investissement dans les cryptomonnaies comporte des risques. Veuillez investir de manière responsable.</p>
+                <p class="disclaimer">Avertissement : L'investissement dans les cryptomonnaies comporte des risques. Veuillez investir de manière responsable.</p>
             </div>
         </section>
     </main>
@@ -52,52 +63,50 @@
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
     <script>
         let web3;
         let activeWallet = null;
 
-        const contractAddress = "0xbCD066737b2237B24F09481458356F69f63155b3"; // Adresse du contrat TEST sur le testnet BSC
+        const contractAddress = "0xbCD066737b2237B24F09481458356F69f63155b3"; // Adresse du contrat TEST
         const abi = [
-            "function buy() public payable" // ABI simplifié de la fonction d'achat
+            {
+                "inputs": [],
+                "name": "buy",
+                "outputs": [],
+                "stateMutability": "payable",
+                "type": "function"
+            }
         ];
 
-        // Fonction pour connecter MetaMask
         async function connectMetaMask() {
             if (window.ethereum) {
-                // Vérifier si MetaMask est installé
-                if (window.ethereum.isMetaMask) {
-                    try {
-                        // Demander à MetaMask de nous connecter
-                        await window.ethereum.request({ method: 'eth_requestAccounts' });
-                        web3 = new Web3(window.ethereum);
-                        activeWallet = 'MetaMask';
+                try {
+                    await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    web3 = new Web3(window.ethereum);
+                    activeWallet = 'MetaMask';
 
-                        // Vérifier le réseau
-                        const network = await web3.eth.net.getId();
-                        if (network !== 97) { // Testnet BSC
-                            await switchToBSCTestnet();
-                        }
-
-                        alert("MetaMask connecté !");
-                    } catch (err) {
-                        console.error("Erreur de connexion à MetaMask :", err);
-                        alert("Erreur de connexion. Assurez-vous que MetaMask est bien installé.");
+                    const network = await web3.eth.net.getId();
+                    if (network !== 97) { // Testnet Binance Smart Chain
+                        await switchToBSCTestnet();
                     }
-                } else {
-                    alert("MetaMask n'est pas installé.");
+
+                    alert("MetaMask connecté avec succès !");
+                } catch (err) {
+                    console.error("Erreur de connexion à MetaMask :", err);
+                    alert("Erreur lors de la connexion à MetaMask.");
                 }
             } else {
-                alert("Extension MetaMask non détectée.");
+                alert("MetaMask n'est pas installé.");
             }
         }
 
-        // Ajouter ou basculer vers le testnet Binance Smart Chain
         async function switchToBSCTestnet() {
             try {
                 await window.ethereum.request({
                     method: 'wallet_addEthereumChain',
                     params: [{
-                        chainId: '0x61', // Testnet BSC Chain ID en hexadécimal
+                        chainId: '0x61',
                         chainName: 'Binance Smart Chain Testnet',
                         rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545/'],
                         nativeCurrency: {
@@ -108,13 +117,12 @@
                         blockExplorerUrls: ['https://testnet.bscscan.com']
                     }]
                 });
-                alert("Réseau Binance Smart Chain Testnet ajouté.");
+                alert("Réseau Binance Smart Chain Testnet ajouté avec succès.");
             } catch (err) {
                 console.error("Erreur lors du changement de réseau :", err);
             }
         }
 
-        // Acheter des tokens TEST
         async function acheterTEST() {
             const amount = document.getElementById('amount').value;
             if (!amount || parseFloat(amount) <= 0) {
@@ -127,14 +135,9 @@
                     const accounts = await web3.eth.getAccounts();
                     const contract = new web3.eth.Contract(abi, contractAddress);
 
-                    // Estimer les frais de gaz pour l'achat
                     const gasPrice = await web3.eth.getGasPrice();
-                    const gasLimit = await contract.methods.buy().estimateGas({ from: accounts[0], value: web3.utils.toWei(amount, 'ether') });
+                    const gasLimit = 300000; // Limite de gas fixe
 
-                    // Afficher l'estimation des frais de gaz
-                    console.log(`Estimation des frais de gaz : Prix du gaz : ${gasPrice}, Limite de gaz : ${gasLimit}`);
-
-                    // Envoyer la transaction avec l'estimation du gaz
                     const tx = await contract.methods.buy().send({
                         from: accounts[0],
                         value: web3.utils.toWei(amount, 'ether'),
@@ -142,18 +145,16 @@
                         gas: gasLimit
                     });
 
-                    alert("Achat en cours via MetaMask. Transaction ID : " + tx.transactionHash);
+                    alert("Achat réussi ! ID de transaction : " + tx.transactionHash);
                 } catch (err) {
                     console.error("Erreur lors de l'achat avec MetaMask :", err);
-                    // Capture de l'erreur détaillée
-                    alert(`Erreur lors de l'achat avec MetaMask : ${err.message || err}`);
+                    alert(`Erreur lors de l'achat : ${err.message}`);
                 }
             } else {
-                alert("Veuillez connecter un portefeuille.");
+                alert("Veuillez connecter MetaMask.");
             }
         }
 
-        // Ajouter les événements
         document.getElementById('connect-metamask').addEventListener('click', connectMetaMask);
         document.getElementById('buy-button').addEventListener('click', acheterTEST);
     </script>
